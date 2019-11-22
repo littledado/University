@@ -153,7 +153,7 @@ comando_e readCommandFromUser()
 
     for (int i = 0; i < strlen(commandString); i++)
     {
-       commandString[i] = toupper(commandString[i]);
+        commandString[i] = toupper(commandString[i]);
     }
 
     if (strcmp(commandString, "DATE") == 0)
@@ -275,4 +275,48 @@ void printTrip(trip trip)
            trip.time_departure.h, trip.time_departure.m, trip.time_departure.s,
            trip.time_arrival.h, trip.time_arrival.m, trip.time_arrival.s,
            trip.delay);
+}
+
+// returns 1 if date 1 is newer than date2, -1 if date1 is minor than date2, 0 if date1 is equal date2
+int dateCompare(data date1, data date2)
+{
+    if (date1.year < date2.year)
+        return -1;
+
+    if (date1.year > date2.year)
+        return 1;
+
+    if (date1.month < date2.month)
+        return -1;
+
+    if (date1.month > date2.month)
+        return 1;
+
+    if (date1.day < date2.day)
+        return -1;
+
+    if (date1.day > date2.day)
+        return 1;
+
+    return 0;
+}
+
+void filterByDate(trip_table table)
+{
+    char data1_string[MAX_CHAR], data2_string[MAX_CHAR];
+    data data1, data2;
+
+    printf("Inserisci un intervallo di date:\n"
+           "Data di partenza (aaaa/mm/dd):\t" );
+    scanf("%s", data1_string);
+
+    printf("Data di arrivo (aaaa/mm/dd):\t");
+    scanf("%s", data2_string);
+
+    data1 = parseDataFromRaw(data1_string);
+    data2 = parseDataFromRaw(data2_string);
+
+    for (int i = 0; i < table.n_record; i++){
+        
+    }
 }
