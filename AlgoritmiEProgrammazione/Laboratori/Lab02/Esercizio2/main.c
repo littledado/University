@@ -74,6 +74,8 @@ void executeCommand(comando_e comando, trip_table table);
 data parseDataFromRaw(char data[]);
 ora parseTimeFromRaw(char time[]);
 void filterByDate(trip_table table);
+void filterByDateAndDelay(trip_table table);
+void filterDate(trip_table table, int delay);
 void filterByDestination(trip_table table, destination_type destinationType);
 void printTrip(trip trip);
 void showTotalDelayByTripId(trip_table table);
@@ -181,7 +183,7 @@ void executeCommand(comando_e comando, trip_table table)
     switch (comando)
     {
     case r_date:
-        // filterByDate(table);
+        filterByDate(table);
         break;
     case r_partenza:
         filterByDestination(table, departure);
@@ -190,6 +192,7 @@ void executeCommand(comando_e comando, trip_table table)
         filterByDestination(table, arrival);
         break;
     case r_ritardo:
+        filterByDateAndDelay(table);
         break;
     case r_ritardo_tot:
         showTotalDelayByTripId(table);
@@ -301,13 +304,13 @@ int dateCompare(data date1, data date2)
     return 0;
 }
 
-void filterByDate(trip_table table)
+void filterDate(trip_table table, int delay)
 {
     char data1_string[MAX_CHAR], data2_string[MAX_CHAR];
     data data1, data2;
 
     printf("Inserisci un intervallo di date:\n"
-           "Data di partenza (aaaa/mm/dd):\t" );
+           "Data di partenza (aaaa/mm/dd):\t");
     scanf("%s", data1_string);
 
     printf("Data di arrivo (aaaa/mm/dd):\t");
@@ -316,7 +319,33 @@ void filterByDate(trip_table table)
     data1 = parseDataFromRaw(data1_string);
     data2 = parseDataFromRaw(data2_string);
 
-    for (int i = 0; i < table.n_record; i++){
-        
+    for (int i = 0; i < table.n_record; i++)
+    {
+        int arrivalComparation = dateCompare(table.trips[i].date_trip, data1);
+        int departureComparation = dateCompare(table.trips[i].date_trip, data2);
+
+        if (arrivalComparation == 0 || arrivalComparation == 1)
+            if (departureComparation == 0 || departureComparation == -1)
+            {
+                if (delay)
+                {
+                    if (table.trips[i].delay > 0)
+                        printTrip(table.trips[i]);
+                }
+                else
+                {
+                    printTrip(table.trips[i]);
+                }
+            }
     }
+}
+
+void filterByDateAndDelay(trip_table table)
+{
+    filterDate(table, 1);
+}
+
+void filterByDate(trip_table table)
+{
+    filterDate(table, 0);
 }
