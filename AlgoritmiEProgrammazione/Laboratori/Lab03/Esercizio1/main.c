@@ -78,53 +78,6 @@ int getAllRectangles(Matrix matrix, Rectangle rectangles[])
 
                 rectangles[rectangleNumbers++] = newRect;
             }
-            // int findStartRectangle = 0;
-            // int casella = matrix.value[i][j];
-
-            // if (casella == 1)
-            // {
-            //     if (!findStartRectangle)
-            //     {
-            //         // Get new empty rectangle
-            //         Rectangle newRectangle = getEmptyRectangle();
-            //         newRectangle.x = i;
-            //         newRectangle.y = j;
-            //         // Incremento numero di rettangoli trovati
-            //         rectangleNumbers++;
-
-            //         for (int riga = i, fineAltezza = 0; riga < matrix.n_rows && !fineAltezza; riga++)
-            //         {
-            //             for (int colonna = j, fineBase = 0; colonna < matrix.n_cols && !fineBase; colonna++)
-            //             {
-            //                 if (matrix.value[riga][colonna] == 0)
-            //                 {
-            //                     if (colonna == j)
-            //                     {
-            //                         fineAltezza = 1;
-            //                     }
-            //                     else
-            //                     {
-            //                         fineBase = 1;
-            //                     }
-            //                 }
-            //                 else
-            //                 {
-            //                     // Incremento base
-            //                     if (riga == i)
-            //                         newRectangle.base++;
-            //                     // Smarco la cella in modo da non riconteggiarla più
-            //                     matrix.value[riga][colonna] = 0;
-            //                 }
-            //             }
-
-            //             if (!fineAltezza)
-            //                 newRectangle.altezza++;
-            //         }
-
-            //         // Assegno il rettangolo al vettore
-            //         rectangles[rectangleNumbers - 1] = newRectangle;
-            //     }
-            // }
         }
     }
 
