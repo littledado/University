@@ -40,7 +40,7 @@ typedef struct
 } trip_detail_raw;
 typedef enum sortingType
 {
-    NONE,
+    NONE = 0,
     BY_DATE,
     BY_CODE,
     BY_DEPARTURE,
@@ -50,6 +50,10 @@ typedef struct
 {
     int n_record;
     trip trips[MAX_ROWS];
+    trip *tripsReference_DATE[MAX_ROWS];
+    trip *tripsReference_CODE[MAX_ROWS];
+    trip *tripsReference_DEPARTURE[MAX_ROWS];
+    trip *tripsReference_ARRIVAL[MAX_ROWS];
     SortingType sorted;
 } trip_table;
 
@@ -94,7 +98,7 @@ void filterDate(trip_table table, int delay);
 void filterByDestination(trip_table table, destination_type destinationType);
 void printTrip(trip trip, FILE *fp);
 void showTotalDelayByTripId(trip_table table);
-void bubbleSort(trip *trips, int dim, SortingType sortingMode);
+void bubbleSort(trip *trips[MAX_ROWS], int dim, SortingType sortingMode);
 int compareByDate(trip *trip1, trip *trip2);
 int compareByCode(trip *trip1, trip *trip2);
 int compareStrings(char *string1, char *string2);
@@ -160,6 +164,9 @@ trip_table readTableFromFile(FILE *fp)
 
         // save record
         table.trips[i] = trip;
+
+        // Save pointers
+        table.tripsReference_DATE[i] = table.tripsReference_CODE[i] = table.tripsReference_DEPARTURE[i] = table.tripsReference_ARRIVAL[i] = &table.trips[i];
     }
     // Set no sorting
     table.sorted = NONE;
@@ -263,19 +270,19 @@ void executeCommand(comando_e comando, trip_table *table)
         showTotalDelayByTripId(*table);
         break;
     case r_order_date:
-        bubbleSort(table->trips, table->n_record, BY_DATE);
+        bubbleSort(table->tripsReference_DATE, table->n_record, BY_DATE);
         table->sorted = BY_DATE;
         break;
     case r_order_code:
-        bubbleSort(table->trips, table->n_record, BY_CODE);
+        bubbleSort(table->tripsReference_CODE, table->n_record, BY_CODE);
         table->sorted = BY_CODE;
         break;
     case r_order_departure:
-        bubbleSort(table->trips, table->n_record, BY_DEPARTURE);
+        bubbleSort(table->tripsReference_DEPARTURE, table->n_record, BY_DEPARTURE);
         table->sorted = BY_DEPARTURE;
         break;
     case r_order_arrival:
-        bubbleSort(table->trips, table->n_record, BY_ARRIVAL);
+        bubbleSort(table->tripsReference_ARRIVAL, table->n_record, BY_ARRIVAL);
         table->sorted = BY_ARRIVAL;
         break;
     case r_print_file:
@@ -439,14 +446,14 @@ void filterByDate(trip_table table)
 }
 
 // Algoritmo del bubble sort
-void bubbleSort(trip *trips, int dim, SortingType sortingMode)
+void bubbleSort(trip *trips[MAX_ROWS], int dim, SortingType sortingMode)
 {
     for (int i = 0; i < dim - 1; i++)
     {
         for (int j = 0; j < dim - i - 1; j++)
         {
-            trip *tripCurrent = &trips[j];
-            trip *tripNext = &trips[j + 1];
+            trip *tripCurrent = trips[j];
+            trip *tripNext = trips[j + 1];
             int needToSwap = 0;
             switch (sortingMode)
             {
@@ -520,7 +527,26 @@ void printAllDataBase(trip_table *table, comando_e comando)
 
     for (int i = 0; i < table->n_record; i++)
     {
-        printTrip(table->trips[i], fp_out);
+        switch (table->sorted)
+        {
+        case NONE:
+            printTrip(table->trips[i], fp_out);
+            break;
+        case BY_DATE:
+            printTrip(*table->tripsReference_DATE[i], fp_out);
+            break;
+        case BY_CODE:
+            printTrip(*table->tripsReference_CODE[i], fp_out);
+            break;
+        case BY_DEPARTURE:
+            printTrip(*table->tripsReference_DEPARTURE[i], fp_out);
+            break;
+        case BY_ARRIVAL:
+            printTrip(*table->tripsReference_ARRIVAL[i], fp_out);
+            break;
+        default:
+            break;
+        }
     }
 
     if (comando == r_print_file)
@@ -538,13 +564,14 @@ void searchByDeparture(trip_table *table)
     printf("Esito ricerca:\n");
 
     if (table->sorted == BY_DEPARTURE)
-       index =  dicotomicStringSearch(table, stringToSearch);
+        index = dicotomicStringSearch(table, stringToSearch);
     else
         index = linearStringSearch(table, stringToSearch);
-    
+
     if (index != -1)
-    printTrip(table->trips[index], stdout);
-    else printf("Nessun risultato trovato");
+        printTrip(table->trips[index], stdout);
+    else
+        printf("Nessun risultato trovato");
 }
 
 int linearStringSearch(trip_table *table, char *stringToCheck)
