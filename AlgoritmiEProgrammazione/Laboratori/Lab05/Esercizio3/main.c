@@ -93,8 +93,8 @@ void closeFile(FILE **fp);
 trip_table getEmptyTripTable();
 int isEmptyTripTable(trip_table *table);
 void freeTripTable(trip_table *table);
-void mallocArray2DRef(trip_table ***pointer, int rows);
-void mallocArray1D(trip_table **pointer, int rows);
+void mallocArray2DRef(trip ***pointer, int rows);
+void mallocArray1D(trip **pointer, int rows);
 void initializeTripTable(trip_table *table, int n_records);
 void readTableDataStruct(trip_table *table);
 int isExitCommand(comando_e comando);
@@ -123,15 +123,17 @@ void searchByDeparture(trip_table *table);
 
 int main()
 {
-    trip_table tripTable;
+    trip_table *tripTable;
     comando_e comando;
     command_status command_status;
 
     // Get empty Table
-    tripTable = getEmptyTripTable();
+    tripTable = (trip_table *)malloc(sizeof(trip_table));
+
+    *tripTable = getEmptyTripTable();
 
     // Read table from file
-    readTableDataStruct(&tripTable);
+    readTableDataStruct(tripTable);
     command_status = waiting_command;
 
     while (command_status == waiting_command)
@@ -144,7 +146,7 @@ int main()
         else
         {
             // Execute command
-            executeCommand(comando, &tripTable);
+            executeCommand(comando, tripTable);
         }
     }
 
@@ -665,33 +667,33 @@ void freeArray2D(void ***pointer, int rows, int columns)
     {
         for (int j = 0; j < columns; j++)
         {
-            free(pointer[i][j]);
+            free((*pointer)[i]);
         }
+        free(*pointer);
     }
-    free(&pointer);
 }
 void freeTripTable(trip_table *table)
 {
     table->sorted = NONE;
-     free(&table->trips);
-    freeArray2D(table->tripsReference_ARRIVAL, table->n_record, 1);
-    freeArray2D(table->tripsReference_CODE, table->n_record, 1);
-    freeArray2D(table->tripsReference_DATE, table->n_record, 1);
-    freeArray2D(table->tripsReference_DEPARTURE, table->n_record, 1);
+    free(&table->trips);
+    freeArray2D((void ***)&table->tripsReference_ARRIVAL, table->n_record, 1);
+    freeArray2D((void ***)&table->tripsReference_CODE, table->n_record, 1);
+    freeArray2D((void ***)&table->tripsReference_DATE, table->n_record, 1);
+    freeArray2D((void ***)&table->tripsReference_DEPARTURE, table->n_record, 1);
     table->n_record = 0;
 }
 
-void mallocArray2DRef(trip_table ***pointer, int rows)
+void mallocArray2DRef(trip ***pointer, int rows)
 {
-    *pointer = (trip_table **)malloc(rows * sizeof(trip_table *));
+    *pointer = (trip **)malloc(rows * sizeof(trip *));
 
     for (int i = 0; i < rows; i++)
-        pointer[i] = (trip_table *)malloc(1 * sizeof(trip_table *));
+        (*pointer)[i] = (trip *)malloc(1 * sizeof(trip *));
 }
 
-void mallocArray1D(trip_table **pointer, int rows)
+void mallocArray1D(trip **pointer, int rows)
 {
-    *pointer = (trip_table *)malloc(rows * sizeof(trip_table));
+    *pointer = (trip *)malloc(rows * sizeof(trip));
 }
 void initializeTripTable(trip_table *table, int n_records)
 {
