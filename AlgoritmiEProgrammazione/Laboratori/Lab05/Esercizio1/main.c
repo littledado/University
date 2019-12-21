@@ -25,24 +25,22 @@ void freeFriend(Amico *friend);
 Amici *readAmiciAndPlayListFromFile(FILE *fp);
 void printAmici(Amici *friends);
 int getSongsNumberOfFriends(Amici *friends);
-int createAllPlaylists(int pos, Amici *friends, char **sol, int n, int count);
+int moltiplicationPrinciple(int pos, Amici *friends, char **sol, int n, int count);
+int createAllPlaylists(Amici *friends);
 
 int main()
 {
     FILE *fp_in;
     Amici *amici = NULL;
-    char **solution = NULL;
     // Apro il file
     fp_in = fopen(FILE_PATH_2, "r");
 
     // Leggo la struttura dati
     amici = readAmiciAndPlayListFromFile(fp_in);
-    // Alloco la memoria per la soluzione
-    solution = (char **)malloc(amici->friendsNumber * sizeof(char *));
+
     // Stampo la struttura dati
     // printAmici(amici);
-
-    createAllPlaylists(0, amici, solution, amici->friendsNumber, 0);
+    createAllPlaylists(amici);
 
     return EXIT_SUCCESS;
 }
@@ -114,7 +112,6 @@ void printAmici(Amici *friends)
     }
     return;
 }
-
 int getSongsNumberOfFriends(Amici *friends)
 {
     int count = 0;
@@ -127,13 +124,13 @@ int getSongsNumberOfFriends(Amici *friends)
     return count;
 }
 
-int createAllPlaylists(int pos, Amici *friends, char **sol, int n, int count)
+int moltiplicationPrinciple(int pos, Amici *friends, char **sol, int n, int count)
 {
 
     // Caso di terminazione
     if (pos >= n)
     {
-        printf("\nPlaylist numero: %d\n", count);
+        printf("\nPlaylist numero: %d\n", count+1);
         for (int i = 0; i < n; i++)
         {
             printf("\t\tCanzone %d:\t%s\n", i + 1, sol[i]);
@@ -141,18 +138,18 @@ int createAllPlaylists(int pos, Amici *friends, char **sol, int n, int count)
         return count + 1;
     }
 
-    // for(int i = 0; i< n; i++){
-    //  if (mark[i] == 0){
-    //      mark[i] = 1;
-    //      sol[pos] = friends[i]
-    //      createAllPlaylists(po)
-    //  }
-    // }
-
     for (int i = 0; i < friends->friends[pos]->songsNumber; i++)
     {
         sol[pos] = friends->friends[pos]->songs[i];
-        count = createAllPlaylists(pos + 1, friends, sol, n, count);
+        count = moltiplicationPrinciple(pos + 1, friends, sol, n, count);
     }
     return count;
+}
+
+int createAllPlaylists(Amici *friends)
+{
+    // Alloco la memoria per la soluzione
+    char **solution = (char **)malloc(friends->friendsNumber * sizeof(char *));
+
+    return moltiplicationPrinciple(0, friends, solution, friends->friendsNumber, 0);
 }
