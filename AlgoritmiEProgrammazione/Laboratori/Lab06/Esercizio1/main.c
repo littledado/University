@@ -28,7 +28,7 @@ int calculateAllPowerSet(Grafo *grafo);
 // Returns 1 if vertex in input is one of the edge
 int isVertexInEdge(Arco arco, int vertex);
 // Returns 1 if vertex in input is in almost one edge
-int checkEdgesAndVertex(Arco *arco, int dim, int vertex);
+int checkEdgesAndVertex(Arco arco, int *solution, int solutionDim);
 // Check if vertexCover
 int isVertexCover(Grafo *grafo, int *solution, int solDim);
 void printVertexCover(int *solution, int dim);
@@ -124,39 +124,30 @@ int isVertexInEdge(Arco arco, int vertex)
     return 0;
 }
 
-int checkEdgesAndVertex(Arco *arco, int dim, int vertex)
+int checkEdgesAndVertex(Arco arco, int *solution, int solutionDim)
 {
-    for (int i = 0; i < dim; i++)
+    int covered = 0;
+
+    for (int i = 0; i < solutionDim && !covered; i++)
     {
-        if (isVertexInEdge(arco[i], vertex) == 1)
-            return 1;
+        if (isVertexInEdge(arco, solution[i]) == 1)
+            covered = 1;
     }
 
-    return 0;
+    return covered;
 }
 
 // Check if vertexCover
 int isVertexCover(Grafo *grafo, int *solution, int solDim)
 {
-    int counter = 0;
-    for (int i = 0; i < solDim && i < grafo->N; i++)
+    int notCovered = 0;
+    for (int i = 0; i < grafo->E && !notCovered; i++)
     {
-        counter += checkEdgesAndVertex(grafo->archi, grafo->E, solution[i]);
-        // entrato = 1;
-        // // if (solution[i] == 1)
-        // // {
-        // //     if (checkEdgesAndVertex(grafo->archi, grafo->E, solution[i]) == 0)
-        // //         found = 0;
-        // // }
+        if (checkEdgesAndVertex(grafo->archi[i], solution, solDim) == 0)
+            notCovered = 1;
     }
 
-    // if (entrato == 1 && found == 1)
-    //     return 1;
-
-    if (counter == solDim)
-        return 1;
-
-    return 0;
+    return !notCovered;
 }
 
 void printVertexCover(int *solution, int dim)
