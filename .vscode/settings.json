@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cwchar": "cpp",
+        "cstdio": "c"
+    }
+}
