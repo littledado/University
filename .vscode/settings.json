@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "cwchar": "cpp",
+        "stdlib.h": "c",
+        "stdio.h": "c",
         "cstdio": "c"
     }
 }
