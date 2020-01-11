@@ -25,7 +25,7 @@ typedef struct
     char *pietre;
 } Collana;
 
-Inventario readInventario();
+Inventario readInventarioFromUser();
 Collana *createCollana(Inventario inventario);
 Collana *allocaCollana(int n_pietre);
 void printCollana(Collana *collana);
@@ -41,7 +41,7 @@ int main(void)
 {
     Collana *collana = NULL;
     // Leggo inventario
-    Inventario inventario = readInventario();
+    Inventario inventario = readInventarioFromUser();
     // Creo la collana
     collana = calculateCollana(&inventario);
     // Stampo la collana
@@ -52,7 +52,7 @@ int main(void)
     return EXIT_SUCCESS;
 }
 
-Inventario readInventario()
+Inventario readInventarioFromUser()
 {
     Inventario result = {0, 0, 0, 0, 0, {'Z', 'T', 'R', 'S'}};
 
