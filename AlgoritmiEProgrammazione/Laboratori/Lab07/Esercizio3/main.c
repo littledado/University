@@ -107,7 +107,7 @@ void showMenu(PgTable *table, Inventario *inventario);
 Pg *findPlayer(PgTable *table, PgCode key);
 void removeObject(PgTable *table, Inventario *inventario);
 void addObject(PgTable *table, Inventario *inventario);
-int readObjectsListFromTable(char *filename, Inventario *inventario);
+int readInventaryFromFile(char *filename, Inventario *inventario);
 int main()
 {
     // Alloco la memoria per la lista di giocatori
@@ -116,7 +116,7 @@ int main()
     // Leggo la tabella da file
     readPlayersListFromTable(FILE_NAME_PLAYERS, playersList);
     // Leggo l'inventario
-    readObjectsListFromTable(FILE_NAME_OBJECTS, inventario);
+    readInventaryFromFile(FILE_NAME_OBJECTS, inventario);
     showMenu(playersList, inventario);
 
     return EXIT_SUCCESS;
@@ -513,7 +513,7 @@ void addObject(PgTable *table, Inventario *inventario)
     addObjectToPlayer(findPlayer(table, codeToRemove), inventario);
 }
 
-int readObjectsListFromTable(char *filename, Inventario *inventario)
+int readInventaryFromFile(char *filename, Inventario *inventario)
 {
     FILE *fp_in = fopen(filename, "r");
     if (fp_in == NULL)

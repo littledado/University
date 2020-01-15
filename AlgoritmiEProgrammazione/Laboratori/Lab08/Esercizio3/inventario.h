@@ -25,13 +25,14 @@ typedef struct t_inventario
     ObjectOfEquipment *objects;
 } Inventario;
 
-// Legge inventario da file
-int readInventaryFromFile(char *filename, Inventario *inventario);
+// Legge lista di oggetti da un file
+Inventario* readInventaryFromFile(char *filename);
 // Stampa l'inventario
 void printInventary(Inventario *Inventario);
 // Cerca un oggetto per nome
 ObjectOfEquipment *findObjectInventaryByName(Inventario *Inventario, char *key);
 // Stampa i dettagli di un oggetto
 void printObjectDetail(ObjectOfEquipment *object);
-
+// genera le statistiche di un oggetto
+ObjectStatistics generateObjectStatistics(int hp, int mp, int atk, int def, int mag, int spr);
 #endif
