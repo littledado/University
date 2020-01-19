@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "invarray.h": "c",
+        "inv.h": "c",
+        "equiparray.h": "c",
+        "pg.h": "c"
+    }
+}
