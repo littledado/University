@@ -3,6 +3,13 @@
         "invarray.h": "c",
         "inv.h": "c",
         "equiparray.h": "c",
-        "pg.h": "c"
+        "pg.h": "c",
+        "elementlist.h": "c",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xmemory": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp"
     }
 }
